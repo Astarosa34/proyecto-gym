@@ -13,7 +13,6 @@
     </header>
 
     <main>
-        <!-- Seccion de Identificacion -->
         <section id="seccion-busqueda">
             <h2>Identificacion del Miembro</h2>
             <p>Ingresa tu ID de 4 dígitos o nombre registrado:</p>
@@ -23,16 +22,14 @@
             </div>
         </section>
 
-        <!-- Seccion del Panel de Usuario -->
         <section id="panel-usuario" style="display: none; margin-top: 30px;">
             <div style="background-color: #f1f5f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
                 <h2>Informacion de Membresia</h2>
                 <p><strong>Socio:</strong> <span id="nombre-socio"></span> (ID: <span id="id-socio"></span>)</p>
-                <p><strong>Estatus:</strong> <span style="color: green; font-weight: bold;" id="estatus-socio">Activo</span></p>
+                <p><strong>Estatus:</strong> <span style="font-weight: bold;" id="estatus-socio"></span></p>
                 <p><strong>Vigencia restante:</strong> <span id="vigencia-socio"></span></p>
             </div>
 
-            <!-- Resumen de Ultimo Progreso (Condicional) -->
             <div id="resultado-progreso" style="background-color: #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
                 <h3>Ultimo Registro de Progreso Fisico</h3>
                 <p id="mensaje-progreso" style="font-weight: bold; color: #b91c1c;">Datos aun no registrados.</p>
@@ -62,43 +59,71 @@
     </footer>
 
     <script>
-        // Base de datos simulada con IDs unicos de 4 digitos
-        const baseDatosMiembros = [
-            { id: "1001", nombre: "Carlos Santana", membresia: "Mensual (Full)", vigencia: "15 dias", pesoAnterior: 80.0, fechaAnterior: "10/05/2026" },
-            { id: "1002", nombre: "Maria Lopez", membresia: "Anual", vigencia: "120 dias", pesoAnterior: null, fechaAnterior: null }, // Miembro sin datos fisicos registrados aun
-            { id: "1003", nombre: "Juan Perez", membresia: "Mensual", vigencia: "28 dias", pesoAnterior: null, fechaAnterior: null }
-        ];
+        function obtenerMiembros() {
+            let miembros = JSON.parse(localStorage.getItem("gym_miembros"));
+            if (!miembros) {
+                miembros = [
+                    { id: "1001", nombre: "Carlos Santana", membresia: "Mensual", fechaRegistro: "2026-05-10", duracionDias: 30, pesoAnterior: 80.0, fechaAnterior: "10/05/2026" },
+                    { id: "1002", nombre: "María López", membresia: "Anual", fechaRegistro: "2025-06-01", duracionDias: 365, pesoAnterior: null, fechaAnterior: null }
+                ];
+                localStorage.setItem("gym_miembros", JSON.stringify(miembros));
+            }
+            return miembros;
+        }
+
+        function calcularVigencia(fechaRegistroStr, duracionDias) {
+            const fechaRegistro = new Date(fechaRegistroStr);
+            const hoy = new Date();
+            const diasTranscurridos = Math.floor((hoy - fechaRegistro) / (1000 * 60 * 60 * 24));
+            return duracionDias - diasTranscurridos;
+        }
 
         let miembroActual = null;
+        let listaMiembros = obtenerMiembros();
 
         function buscarMiembro() {
             const termino = document.getElementById("input-busqueda").value.trim().toLowerCase();
             
             if (termino === "") {
-                alert("Por favor, ingresa un ID de 4 digitos o nombre valido.");
+                alert("Por favor, ingresa un ID de 4 dígitos o nombre válido.");
                 return;
             }
 
-            miembroActual = baseDatosMiembros.find(m => m.id === termino || m.nombre.toLowerCase().includes(termino));
+            listaMiembros = obtenerMiembros();
+            miembroActual = listaMiembros.find(m => m.id === termino || m.nombre.toLowerCase().includes(termino));
 
             if (miembroActual) {
                 document.getElementById("nombre-socio").textContent = miembroActual.nombre;
                 document.getElementById("id-socio").textContent = miembroActual.id;
-                document.getElementById("vigencia-socio").textContent = miembroActual.vigencia;
+                
+                const diasRestantes = calcularVigencia(miembroActual.fechaRegistro, miembroActual.duracionDias);
+                const spanEstatus = document.getElementById("estatus-socio");
+                const spanVigencia = document.getElementById("vigencia-socio");
+
+                spanVigencia.textContent = diasRestantes > 0 ? diasRestantes + " días restantes" : "Membresía expirada";
+                if (diasRestantes > 5) {
+                    spanEstatus.textContent = "Activo";
+                    spanEstatus.style.color = "green";
+                } else if (diasRestantes > 0) {
+                    spanEstatus.textContent = "Por Vencer";
+                    spanEstatus.style.color = "orange";
+                } else {
+                    spanEstatus.textContent = "Vencido";
+                    spanEstatus.style.color = "red";
+                }
 
                 const mensajeProgreso = document.getElementById("mensaje-progreso");
-                
-                if (miembroActual.pesoAnterior !== null) {
+                if (miembroActual.pesoAnterior !== null && miembroActual.pesoAnterior !== undefined) {
                     mensajeProgreso.style.color = "#15803d";
-                    mensajeProgreso.textContent = `Ultima actualizacion el ${miembroActual.fechaAnterior}. Peso registrado anterior: ${miembroActual.pesoAnterior} kg.`;
+                    mensajeProgreso.textContent = `Última actualización el ${miembroActual.fechaAnterior}. Peso registrado anterior: ${miembroActual.pesoAnterior} kg.`;
                 } else {
                     mensajeProgreso.style.color = "#b91c1c";
-                    mensajeProgreso.textContent = "Datos aun no registrados.";
+                    mensajeProgreso.textContent = "Datos aún no registrados.";
                 }
 
                 document.getElementById("panel-usuario").style.display = "block";
             } else {
-                alert("No se encontro ningun socio con ese ID de 4 digitos o nombre.");
+                alert("No se encontró ningún socio con ese ID de 4 dígitos o nombre.");
             }
         }
 
@@ -109,23 +134,31 @@
             const pesoAnv = miembroActual.pesoAnterior;
             let mensajeCambio = "";
 
-            if (pesoAnv !== null) {
+            if (pesoAnv !== null && pesoAnv !== undefined) {
                 const diferencia = (nuevoPeso - pesoAnv).toFixed(1);
                 if (diferencia > 0) {
-                    mensajeCambio = ` Has aumentado ${diferencia} kg desde tu ultima medicion.`;
+                    mensajeCambio = ` Has aumentado ${diferencia} kg desde tu última medición.`;
                 } else if (diferencia < 0) {
-                    mensajeCambio = ` Has bajado ${Math.abs(diferencia)} kg desde tu ultima medicion. Excelente progreso.`;
+                    mensajeCambio = ` Has bajado ${Math.abs(diferencia)} kg desde tu última medición. Excelente progreso.`;
                 } else {
                     mensajeCambio = ` Te mantienes en el mismo peso que tu registro anterior.`;
                 }
             } else {
-                mensajeCambio = ` Primer registro guardado con exito. Tus datos fisicos han quedado habilitados en el sistema.`;
+                mensajeCambio = ` Primer registro guardado con éxito. Tus datos físicos han quedado habilitados en el sistema.`;
             }
 
             alert(`Datos actualizados correctamente para ${miembroActual.nombre}.${mensajeCambio}`);
             
             miembroActual.pesoAnterior = nuevoPeso;
             miembroActual.fechaAnterior = new Date().toLocaleDateString();
+
+            // Actualizar en localStorage
+            let miembrosGlobales = obtenerMiembros();
+            const index = miembrosGlobales.findIndex(m => m.id === miembroActual.id);
+            if (index !== -1) {
+                miembrosGlobales[index] = miembroActual;
+                localStorage.setItem("gym_miembros", JSON.stringify(miembrosGlobales));
+            }
             
             document.getElementById("form-progreso").reset();
             location.reload();
