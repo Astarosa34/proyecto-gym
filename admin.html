@@ -42,6 +42,25 @@
                 </tbody>
             </table>
         </section>
+
+        <section style="margin-top: 30px;">
+            <h2>Registrar Nuevo Miembro</h2>
+            <form style="margin-top: 15px;">
+                <div style="margin-bottom: 10px;">
+                    <label for="nombre" style="display: block; font-weight: bold;">Nombre completo:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" style="width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label for="membresia" style="display: block; font-weight: bold;">Tipo de Membresía:</label>
+                    <select id="membresia" name="membresia" style="width: 100%; padding: 8px; margin-top: 5px;">
+                        <option value="mensual">Mensual</option>
+                        <option value="anual">Anual</option>
+                        <option value="visita">Visita Diaria</option>
+                    </select>
+                </div>
+                <button type="submit" style="background-color: #2563eb; color: white; padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Guardar Miembro</button>
+            </form>
+        </section>
     </main>
 
     <footer>
