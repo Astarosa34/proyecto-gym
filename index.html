@@ -9,17 +9,30 @@
 <body>
     <header>
         <h1>Bienvenido al Sistema de Gestión del Gimnasio</h1>
-        <p>Panel de control principal para miembros y renovaciones.</p>
+        <p>Plataforma SaaS de Control, Membresías y Progreso.</p>
     </header>
 
     <main>
         <section>
-            <h2>Acceso al Sistema</h2>
-            <p>Selecciona tu perfil para ingresar:</p>
-            <ul>
-                <li><a href="admin.html">Entrar como Administrador</a></li>
+            <h2>Selecciona tu Portal de Acceso</h2>
+            <p>Elige el módulo correspondiente a tu rol en el sistema:</p>
+            <ul style="line-height: 2;">
+                <li><a href="#" onclick="verificarAdmin(); return false;">Entrar como Administrador (Dueño / Control)</a></li>
+                <li><a href="user.html">Entrar como Miembro (Progreso personal)</a></li>
             </ul>
         </section>
     </main>
+
+    <script>
+        function verificarAdmin() {
+            const password = prompt("Ingresa la contraseña de Administrador:");
+            if (password === "141203") {
+                alert("Acceso concedido. Redirigiendo al panel...");
+                window.location.href = "admin.html";
+            } else if (password !== null) {
+                alert("Contraseña incorrecta. Acceso denegado.");
+            }
+        }
+    </script>
 </body>
 </html>
