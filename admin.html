@@ -8,14 +8,14 @@
 </head>
 <body>
     <header>
-        <h1>Panel de Control - Administrador</h1>
-        <p>Gestión de miembros, pagos, vigencia por tiempo y membresías.</p>
+        <h1>Administrador</h1>
+        <p>Gestión de miembros, pagos, vigencia y membresías.</p>
     </header>
 
     <main>
         <section>
-            <h2>Control de Miembros Activos</h2>
-            <p>Listado general de clientes registrados en el sistema con cálculo automático de vigencia:</p>
+            <h2>Control de Miembros</h2>
+            <p>Listado general de clientes registrados:</p>
             
             <table border="1" cellpadding="10" style="width:100%; border-collapse: collapse; margin-top: 15px;">
                 <thead>
@@ -29,7 +29,6 @@
                     </tr>
                 </thead>
                 <tbody id="tabla-miembros">
-                    <!-- Los miembros se cargan dinámicamente -->
                 </tbody>
             </table>
         </section>
@@ -46,7 +45,7 @@
                     <select id="membresia" name="membresia" style="width: 100%; padding: 8px; margin-top: 5px;">
                         <option value="Mensual">Mensual (30 días)</option>
                         <option value="Anual">Anual (365 días)</option>
-                        <option value="Visita">Visita Diaria (1 día)</option>
+                        <option value="Visita">Visita (1 día)</option>
                     </select>
                 </div>
                 <button type="submit" style="background-color: #2563eb; color: white; padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Guardar Miembro</button>
@@ -59,7 +58,6 @@
     </footer>
 
     <script>
-        // Funciones de manejo con localStorage
         function obtenerMiembros() {
             let miembros = JSON.parse(localStorage.getItem("gym_miembros"));
             if (!miembros) {
