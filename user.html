@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portal - Gimnasio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Portal de Miembro</h1>
+        <p>Consulta tu estatus y registra tu progreso físico opcional.</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Información de tu Membresía</h2>
+            <p><strong>Estatus:</strong> <span style="color: green;">Activo</span></p>
+            <p><strong>Vigencia restante:</strong> 18 días</p>
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h2>Registro Opcional de Progreso Físico</h2>
+            <p>Lleva un control de tus cambios si así lo deseas:</p>
+            <form style="margin-top: 15px;">
+                <div style="margin-bottom: 10px;">
+                    <label for="edad" style="display: block; font-weight: bold;">Edad:</label>
+                    <input type="number" id="edad" name="edad" placeholder="Ej. 21" style="width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label for="peso" style="display: block; font-weight: bold;">Peso actual (kg):</label>
+                    <input type="number" step="0.1" id="peso" name="peso" placeholder="Ej. 75.5" style="width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label for="estatura" style="display: block; font-weight: bold;">Estatura (m):</label>
+                    <input type="number" step="0.01" id="estatura" name="estatura" placeholder="Ej. 1.75" style="width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;">
+                </div>
+                <button type="submit" style="background-color: #2563eb; color: white; padding: 10px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Guardar Mi Progreso</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p style="margin-top: 20px;"><a href="index.html">← Cerrar sesión / Volver al inicio</a></p>
+    </footer>
+</body>
+</html>
