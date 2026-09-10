@@ -9,36 +9,36 @@
 <body>
     <header>
         <h1>Portal de Miembro y Seguimiento de Progreso</h1>
-        <p>Identifícate con tu ID o Nombre para registrar y consultar tus avances.</p>
+        <p>Identifícate con tu ID de 4 dígitos o Nombre para consultar tus avances.</p>
     </header>
 
     <main>
         <!-- Seccion de Identificacion -->
         <section id="seccion-busqueda">
             <h2>Identificacion del Miembro</h2>
-            <p>Ingresa tu clave de socio o nombre registrado para acceder a tu expediente:</p>
+            <p>Ingresa tu ID de 4 dígitos o nombre registrado:</p>
             <div style="margin-top: 15px;">
-                <input type="text" id="input-busqueda" placeholder="Ej. 001 o Carlos Santana" style="width: 70%; padding: 8px; box-sizing: border-box;">
+                <input type="text" id="input-busqueda" placeholder="Ej. 1001 o Carlos Santana" style="width: 70%; padding: 8px; box-sizing: border-box;">
                 <button onclick="buscarMiembro()" style="background-color: #2563eb; color: white; padding: 9px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 28%;">Buscar</button>
             </div>
         </section>
 
-        <!-- Seccion del Panel de Usuario (Oculta hasta identificar) -->
+        <!-- Seccion del Panel de Usuario -->
         <section id="panel-usuario" style="display: none; margin-top: 30px;">
             <div style="background-color: #f1f5f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
                 <h2>Informacion de Membresia</h2>
                 <p><strong>Socio:</strong> <span id="nombre-socio"></span> (ID: <span id="id-socio"></span>)</p>
                 <p><strong>Estatus:</strong> <span style="color: green; font-weight: bold;" id="estatus-socio">Activo</span></p>
-                <p><strong>Vigencia restante:</strong> <span id="vigencia-socio">18 días</span></p>
+                <p><strong>Vigencia restante:</strong> <span id="vigencia-socio"></span></p>
             </div>
 
-            <!-- Resumen de Ultimo Progreso -->
-            <div id="resultado-progreso" style="background-color: #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
-                <h3>Ultimo Registro de Progreso</h3>
-                <p id="mensaje-progreso">No hay registros previos.</p>
+            <!-- Resumen de Ultimo Progreso (Condicional) -->
+            <div id="resultado-progreso" style="background-color: #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                <h3>Ultimo Registro de Progreso Fisico</h3>
+                <p id="mensaje-progreso" style="font-weight: bold; color: #b91c1c;">Datos aun no registrados.</p>
             </div>
 
-            <h2>Registro de Progreso Fisico</h2>
+            <h2>Registrar o Actualizar Progreso Fisico</h2>
             <form id="form-progreso" style="margin-top: 15px;">
                 <div style="margin-bottom: 10px;">
                     <label for="edad" style="display: block; font-weight: bold;">Edad:</label>
@@ -62,10 +62,11 @@
     </footer>
 
     <script>
-        // Base de datos simulada de miembros (conectada con el panel admin)
+        // Base de datos simulada con IDs unicos de 4 digitos
         const baseDatosMiembros = [
-            { id: "001", nombre: "Carlos Santana", membresia: "Mensual (Full)", vigencia: "15 dias", pesoAnterior: 80.0, fechaAnterior: "10/05/2026" },
-            { id: "002", nombre: "Maria Lopez", membresia: "Anual", vigencia: "120 dias", pesoAnterior: 62.5, fechaAnterior: "28/04/2026" }
+            { id: "1001", nombre: "Carlos Santana", membresia: "Mensual (Full)", vigencia: "15 dias", pesoAnterior: 80.0, fechaAnterior: "10/05/2026" },
+            { id: "1002", nombre: "Maria Lopez", membresia: "Anual", vigencia: "120 dias", pesoAnterior: null, fechaAnterior: null }, // Miembro sin datos fisicos registrados aun
+            { id: "1003", nombre: "Juan Perez", membresia: "Mensual", vigencia: "28 dias", pesoAnterior: null, fechaAnterior: null }
         ];
 
         let miembroActual = null;
@@ -74,36 +75,33 @@
             const termino = document.getElementById("input-busqueda").value.trim().toLowerCase();
             
             if (termino === "") {
-                alert("Por favor, ingresa un ID o nombre valido.");
+                alert("Por favor, ingresa un ID de 4 digitos o nombre valido.");
                 return;
             }
 
-            // Busqueda por coincidencia de ID o Nombre
-            miembroActual = baseDatosMiembros.find(m => m.id.toLowerCase() === termino || m.nombre.toLowerCase().includes(termino));
+            miembroActual = baseDatosMiembros.find(m => m.id === termino || m.nombre.toLowerCase().includes(termino));
 
             if (miembroActual) {
-                // Rellenar datos en pantalla
                 document.getElementById("nombre-socio").textContent = miembroActual.nombre;
                 document.getElementById("id-socio").textContent = miembroActual.id;
                 document.getElementById("vigencia-socio").textContent = miembroActual.vigencia;
 
-                // Mostrar historial si existe
-                const seccionProgreso = document.getElementById("resultado-progreso");
                 const mensajeProgreso = document.getElementById("mensaje-progreso");
                 
-                if (miembroActual.pesoAnterior) {
-                    seccionProgreso.style.display = "block";
+                if (miembroActual.pesoAnterior !== null) {
+                    mensajeProgreso.style.color = "#15803d";
                     mensajeProgreso.textContent = `Ultima actualizacion el ${miembroActual.fechaAnterior}. Peso registrado anterior: ${miembroActual.pesoAnterior} kg.`;
+                } else {
+                    mensajeProgreso.style.color = "#b91c1c";
+                    mensajeProgreso.textContent = "Datos aun no registrados.";
                 }
 
-                // Mostrar el panel de usuario y ocultar busqueda inicial
                 document.getElementById("panel-usuario").style.display = "block";
             } else {
-                alert("No se encontro ningun socio con ese ID o nombre. Verifica tus datos o contacta al administrador.");
+                alert("No se encontro ningun socio con ese ID de 4 digitos o nombre.");
             }
         }
 
-        // Manejo del formulario de guardado
         document.getElementById("form-progreso").addEventListener("submit", function(e) {
             e.preventDefault();
             
@@ -111,7 +109,7 @@
             const pesoAnv = miembroActual.pesoAnterior;
             let mensajeCambio = "";
 
-            if (pesoAnv) {
+            if (pesoAnv !== null) {
                 const diferencia = (nuevoPeso - pesoAnv).toFixed(1);
                 if (diferencia > 0) {
                     mensajeCambio = ` Has aumentado ${diferencia} kg desde tu ultima medicion.`;
@@ -121,12 +119,11 @@
                     mensajeCambio = ` Te mantienes en el mismo peso que tu registro anterior.`;
                 }
             } else {
-                mensajeCambio = ` Primer registro guardado con exito.`;
+                mensajeCambio = ` Primer registro guardado con exito. Tus datos fisicos han quedado habilitados en el sistema.`;
             }
 
-            alert(`Datos guardados correctamente para ${miembroActual.nombre}.${mensajeCambio}`);
+            alert(`Datos actualizados correctamente para ${miembroActual.nombre}.${mensajeCambio}`);
             
-            // Actualizar valor en memoria simulada
             miembroActual.pesoAnterior = nuevoPeso;
             miembroActual.fechaAnterior = new Date().toLocaleDateString();
             
